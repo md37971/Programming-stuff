@@ -6,7 +6,9 @@
       # Project Function: Is the variable greater than the other
       # ---------------------------------------------------------------------------
       # Psuedocode:
-      # 
+      # var is created and equal to 25.
+      # threshold is created and equal to 48.
+      # if var is greater than threshold then the program will print higher. Otherwise, it will print lower.
       # ---------------------------------------------------------------------------
 
 var = 25
