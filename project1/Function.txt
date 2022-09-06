@@ -1,0 +1,3 @@
+The project could go in two ways.
+1. The code can simply ask the user various things like what game they play, number of matches, kills or deaths during those matches, etc.
+*2. The code will use a website's API to output their in-game stats without having to type in all of their info in the file. (Just like function 1) All the user would need to do is just type in their username, or whatever information is required, to see their in-game results through the file without having to go to a website or in-game to check their stats.
