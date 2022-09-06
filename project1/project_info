@@ -1,7 +1,8 @@
 PROJECT INFO FILE
 
 1. -PURPOSE-
-
+To determine the users leaderboard stats by inputting their match info through from their games. 
+The code will output their leaderboard stats and show the user their information.
 
 2. -FUNCTION-
 
