@@ -1,4 +1,5 @@
 PROJECT INFO FILE
+---------------PROJECT_1----------------------------
 
 1. -PURPOSE-
 To determine the users leaderboard stats by inputting their match info through from their games. 
@@ -17,3 +18,24 @@ The project could go in two ways.
 
 
 5. -TASKLIST-
+
+--------------PROJECT_2-----------------------------
+
+1. -PURPOSE-
+To entertain the user with this game.
+
+2. -FUNCTION-
+The game will just have simple graphics including 2D shapes and most likely be coded in python. (But other engines will probably be considered)
+The game will be some type of racing game where the player would need to reach the end in order to win. The game can either be played solo or with a bot.
+It's similar to a board game like monolopy or candyland. This game would take inspiration from Wii party, where the players would complete mini games but on their own pace.
+Each player will have the same number of squares / map (or randomly generated to add a bit complexity) that the player will use to navigate.
+The game will work out like this: Once the game the starts, a window will pop up with a random simple game that the player will have to beat (if they can't, then they have a few skips with a long cooldown to prevent headstarts)
+Once the player finishes the game, they would move one space, and would repeat the process until the player beats the game.
+When a player finishes the map going through their tiles, they win and that's it.
+Minigames will be to be thought later.
+
+3. -LEARNING LIST-
+Pygame or ursina (or other engines if considered)
+A.I (for bots)
+
+3. -FLOWCHART-
