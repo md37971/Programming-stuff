@@ -20,8 +20,8 @@ class Player(pygame.sprite.Sprite):
         super(Player, self).__init__()
         self.surf = pygame.Surface((75,25))
         self.surf.fill((255,255,255))
-        cat = pygame.image.load("dog.jpg").convert()
-        self.surf = pygame.transform.scale(cat,((cat.get_width()//20),(cat.get_height()//20)))
+        birdimage = pygame.image.load("bird.png").convert()
+        self.surf = pygame.transform.scale(birdimage,((birdimage.get_width()//20),(birdimage.get_height()//20)))
         self.surf.set_colorkey((255,255,255), RLEACCEL)
         self.rect = self.surf.get_rect()
         #controls
@@ -49,6 +49,8 @@ class Enemy(pygame.sprite.Sprite):
         super(Enemy, self).__init__()
         self.surf = pygame.Surface((20, 10))
         self.surf.fill((255, 255, 255))
+        cannon = pygame.image.load("cannon.png").convert()
+        self.surf = pygame.transform.scale(cannon,((cannon.get_width()//20),(cannon.get_height()//20)))
         self.rect = self.surf.get_rect(
             center=(
                 random.randint(s_width + 20, s_width + 100),
@@ -64,6 +66,11 @@ class Enemy(pygame.sprite.Sprite):
         if self.rect.right < 0:
             self.kill()
             
+
+#sounds
+pygame.mixer.init()
+fart = pygame.mixer.Sound("Uuhhh.oga")
+
 #functions and classes
 
 
@@ -102,10 +109,14 @@ while running:
     enemies.update()
     screen.fill((0,0,0)) #(0,0,0) - Color
     screen.blit(player.surf, player.rect)
+    background2 = pygame.image.load("background3.png").convert()
+    screen.blit(background2,(0,0))
     for entity in all_sprites:
         screen.blit(entity.surf, entity.rect)
     if pygame.sprite.spritecollideany(player, enemies):
         player.kill()
+        fart.play()
+        time.sleep(2)
         running = False
     clock = pygame.time.Clock()
     clock.tick(35)
