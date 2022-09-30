@@ -1,0 +1,154 @@
+#https://realpython.com/pygame-a-primer/#basic-pygame-program
+# Simple pygame program
+# Import and initialize the pygame library
+from distutils.ccompiler import new_compiler
+import pygame
+import random
+import time
+
+from pygame.locals import (
+    RLEACCEL,
+    K_UP,
+    K_DOWN,
+    K_LEFT,
+    K_RIGHT,
+    K_ESCAPE,
+    KEYDOWN,
+    QUIT,
+)
+class Player(pygame.sprite.Sprite):
+    def __init__(self):
+        super(Player, self).__init__()
+        self.surf = pygame.Surface((75,25))
+        self.surf.fill((255,255,255))
+        birdimage = pygame.image.load("bird.png").convert()
+        self.surf = pygame.transform.scale(birdimage,((birdimage.get_width()//20),(birdimage.get_height()//20)))
+        self.surf.set_colorkey((255,255,255), RLEACCEL)
+        self.rect = self.surf.get_rect()
+        #controls
+    def update(self, pressed_keys):
+        if pressed_keys[K_UP]:
+            self.rect.move_ip(0,-5)
+        if pressed_keys[K_DOWN]:
+            self.rect.move_ip(0,5)
+        if pressed_keys[K_LEFT]:
+            self.rect.move_ip(-5,0)
+        if pressed_keys[K_RIGHT]:
+            self.rect.move_ip(5,0)
+        #keeps player on screen
+        if self.rect.left < 0:
+            self.rect.left = 0
+        if self.rect.right > s_width:
+            self.rect.right = s_width
+        if self.rect.top <= 0:
+            self.rect.top = 0
+        if self.rect.bottom >= s_height:
+            self.rect.bottom = s_height
+
+class Enemy(pygame.sprite.Sprite):
+    def __init__(self):
+        super(Enemy, self).__init__()
+        self.surf = pygame.Surface((20, 10))
+        self.surf.fill((255, 255, 255))
+        cannon = pygame.image.load("cannon.png").convert()
+        self.surf = pygame.transform.scale(cannon,((cannon.get_width()//20),(cannon.get_height()//20)))
+        self.rect = self.surf.get_rect(
+            center=(
+                random.randint(s_width + 20, s_width + 100),
+                random.randint(0, s_height),
+            )
+        )
+        self.speed = random.randint(5, 20)
+
+class Cloud(pygame.sprite.Sprite):
+    def __init__(self):
+        super(Cloud, self).__init__()
+        self.surf = pygame.surface((75,25))
+        self.surf.fill((255,255,255))
+        #self.surf.set_colorkey((0,0,0), RLEACCEL)
+        # starting position
+        self.rect = self.surf.get_rect(
+            center = (
+                random.randint(s_width + 20, s_width + 100),
+                random.randint(0, s_height),
+            )
+        )
+
+    def update(self):
+        self.rect.move_ip(-5,0)
+        if self.rect.right < 0:
+            self.kill()
+
+    # Move the sprite based on speed
+    # Remove the sprite when it passes the left edge of the screen
+    def update(self):
+        self.rect.move_ip(-self.speed, 0)
+        if self.rect.right < 0:
+            self.kill()
+            
+
+#sounds
+pygame.mixer.init()
+fart = pygame.mixer.Sound("Uuhhh.oga")
+
+#functions and classes
+
+
+pygame.init()
+
+#define screen width and height
+s_width = 800
+s_height = 600
+screen = pygame.display.set_mode((s_width, s_height))
+ADDENEMY = pygame.USEREVENT + 1
+pygame.time.set_timer(ADDENEMY,250)
+ADDCLOUD = pygame.USEREVENT + 2
+pygame.time.set_timer(ADDCLOUD,1000)
+
+# Set up the drawing window
+screen = pygame.display.set_mode([500, 500])
+player = Player()
+enemies = pygame.sprite.Group()
+clouds = pygame.sprite.Group()
+all_sprites = pygame.sprite.Group()
+all_sprites.add(player)
+
+# Run until the user asks to quit
+running = True
+while running:
+    for event in pygame.event.get():
+        if event.type == KEYDOWN:
+            if event.type == K_ESCAPE:
+                running = False
+        elif event.type == QUIT:
+            running = False
+        elif event.type == ADDENEMY:
+            new_enemy = Enemy()
+            enemies.add(new_enemy)
+            all_sprites.add(new_enemy)
+        elif event.type == ADDCLOUD:
+            new_cloud = Cloud()
+            clouds.add(new_cloud)
+            all_sprites.add(new_cloud)
+
+    pressed_keys = pygame.key.get_pressed()
+    player.update(pressed_keys)
+    enemies.update()
+    clouds.update()
+    screen.fill((0,0,0)) #(0,0,0) - Color
+    screen.blit(player.surf, player.rect)
+    background2 = pygame.image.load("background3.png").convert()
+    screen.blit(background2,(0,0))
+    for entity in all_sprites:
+        screen.blit(entity.surf, entity.rect)
+    if pygame.sprite.spritecollideany(player, enemies):
+        player.kill()
+        fart.play()
+        time.sleep(2)
+        running = False
+    clock = pygame.time.Clock()
+    clock.tick(35)
+    pygame.display.flip()
+
+# Done! Time to quit.
+pygame.quit()
