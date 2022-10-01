@@ -1,10 +1,7 @@
 #https://realpython.com/pygame-a-primer/#basic-pygame-program
 # Simple pygame program
 # Import and initialize the pygame library
-import pygame
-import random
-import time
-
+import pygame,random,time
 from pygame.locals import (
     RLEACCEL,
     K_UP,
@@ -15,14 +12,15 @@ from pygame.locals import (
     KEYDOWN,
     QUIT,
 )
+#functions and classes
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super(Player, self).__init__()
         self.surf = pygame.Surface((75,25))
         self.surf.fill((255,255,255))
-        birdimage = pygame.image.load("bird.png").convert()
-        self.surf = pygame.transform.scale(birdimage,((birdimage.get_width()//20),(birdimage.get_height()//20)))
-        self.surf.set_colorkey((255,255,255), RLEACCEL)
+        birdimage = pygame.image.load("helicopter.png").convert()
+        self.surf = pygame.transform.scale(birdimage,((birdimage.get_width()//5),(birdimage.get_height()//5)))
+        self.surf.set_colorkey((0,0,0), RLEACCEL)
         self.rect = self.surf.get_rect()
         #controls
     def update(self, pressed_keys):
@@ -46,47 +44,94 @@ class Player(pygame.sprite.Sprite):
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
+        a = 0
         super(Enemy, self).__init__()
-        self.surf = pygame.Surface((20, 10))
-        self.surf.fill((255, 255, 255))
+        self.surf = pygame.Surface((25, 10))
+        self.surf.fill((150,150,150))
         cannon = pygame.image.load("cannon.png").convert()
-        self.surf = pygame.transform.scale(cannon,((cannon.get_width()//20),(cannon.get_height()//20)))
+        self.surf = pygame.transform.scale(cannon,((cannon.get_width()//40),(cannon.get_height()//40)))
+        self.surf.set_colorkey((a,a,a), RLEACCEL)
         self.rect = self.surf.get_rect(
             center=(
                 random.randint(s_width + 20, s_width + 100),
                 random.randint(0, s_height),
             )
         )
+
+    def update(self):
+        self.rect.move_ip(-5,0)
+        if self.rect.right < 0:
+            self.kill()    
         self.speed = random.randint(5, 20)
+
+class Cloud(pygame.sprite.Sprite):
+    def __init__(self):
+        super(Cloud, self).__init__()
+        # rng image values
+        rng = random.randint(1,10)
+        if rng == 2 or rng == 5:
+            a = random.randint(3,5)
+            cloudimage = pygame.image.load("balloon.png").convert()
+            self.surf = pygame.transform.scale(cloudimage,((cloudimage.get_width() // a),(cloudimage.get_height() // a))) #8
+            self.surf.set_colorkey((0,0,0), RLEACCEL)
+            self.rect = self.surf.get_rect(
+                center = (
+                    random.randint(s_width + 5, s_width + 50),
+                    random.randint(0, s_height),
+                )
+            )
+        else:
+            a = random.randint(3,6)
+            cloudimage = pygame.image.load("cloud.png").convert()
+            self.surf = pygame.transform.scale(cloudimage,((cloudimage.get_width() // a),(cloudimage.get_height() // a))) #3
+            self.surf.set_colorkey((0,0,0), RLEACCEL)
+            self.rect = self.surf.get_rect(
+                center = (
+                    random.randint(s_width + 20, s_width + 100),
+                    random.randint(0, s_height),
+                )
+            )
+        self.speed = random.randint(5,20)
+    def update(self):
+        self.rect.move_ip(-5,0)
+        if self.rect.right < 0:
+            self.kill()
 
     # Move the sprite based on speed
     # Remove the sprite when it passes the left edge of the screen
-    def update(self):
-        self.rect.move_ip(-self.speed, 0)
-        if self.rect.right < 0:
-            self.kill()
-            
 
-#sounds
+#scoring
+pygame.font.init()
+score = 0
+def scoring(score):
+    font = pygame.font.Font(None,32)
+    points = font.render("Score: " + str(score),True,(255,255,255))
+    screen.blit(points,(0,0))
+
+#sounds and music
 pygame.mixer.init()
-fart = pygame.mixer.Sound("Uuhhh.oga")
-
-#functions and classes
+fart = pygame.mixer.Sound("oof.oga")
+bgmusic = pygame.mixer.Sound("funk.wav")
+bgmusic.set_volume(0.15)
+bgmusic.play()
 
 
 pygame.init()
-
+#pygame.font.init()
 #define screen width and height
 s_width = 800
 s_height = 600
 screen = pygame.display.set_mode((s_width, s_height))
 ADDENEMY = pygame.USEREVENT + 1
 pygame.time.set_timer(ADDENEMY,250)
+ADDCLOUD = pygame.USEREVENT + 2
+pygame.time.set_timer(ADDCLOUD,1000)
 
 # Set up the drawing window
 screen = pygame.display.set_mode([500, 500])
 player = Player()
 enemies = pygame.sprite.Group()
+clouds = pygame.sprite.Group()
 all_sprites = pygame.sprite.Group()
 all_sprites.add(player)
 
@@ -103,23 +148,31 @@ while running:
             new_enemy = Enemy()
             enemies.add(new_enemy)
             all_sprites.add(new_enemy)
+        elif event.type == ADDCLOUD:
+            new_cloud = Cloud()
+            clouds.add(new_cloud)
+            all_sprites.add(new_cloud)
 
+    score += 1
+    scoring(score)
     pressed_keys = pygame.key.get_pressed()
     player.update(pressed_keys)
     enemies.update()
+    clouds.update()
     screen.fill((0,0,0)) #(0,0,0) - Color
     screen.blit(player.surf, player.rect)
-    background2 = pygame.image.load("background3.png").convert()
+    background2 = pygame.image.load("background.png").convert()
     screen.blit(background2,(0,0))
     for entity in all_sprites:
         screen.blit(entity.surf, entity.rect)
     if pygame.sprite.spritecollideany(player, enemies):
         player.kill()
+        bgmusic.stop()
         fart.play()
         time.sleep(2)
         running = False
     clock = pygame.time.Clock()
-    clock.tick(35)
+    clock.tick(45)
     pygame.display.flip()
 
 # Done! Time to quit.
