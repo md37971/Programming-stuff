@@ -102,19 +102,22 @@ class Cloud(pygame.sprite.Sprite):
 
 #scoring
 pygame.font.init()
+basicfont = pygame.font.Font("freesansbold.ttf",15)
 score = 0
-def scoring(score):
-    font = pygame.font.Font(None,32)
-    points = font.render("Score: " + str(score),True,(255,255,255))
-    screen.blit(points,(0,0))
-
+coins = 0
+def scoring(score): #timescore
+    points = basicfont.render("Score: " + str(score),True,(0,0,0))
+    screen.blit(points,[0,0])
+def scoring2(coins): #coinscore
+    coinpoints = basicfont.render("Coins: " + str(coins),True,(0,0,0))
+    screen.blit(coinpoints,[0,15])
+    
 #sounds and music
 pygame.mixer.init()
 fart = pygame.mixer.Sound("oof.oga")
 bgmusic = pygame.mixer.Sound("funk.wav")
-bgmusic.set_volume(0.15)
+bgmusic.set_volume(0.2)
 bgmusic.play()
-
 
 pygame.init()
 #pygame.font.init()
@@ -153,12 +156,15 @@ while running:
             clouds.add(new_cloud)
             all_sprites.add(new_cloud)
 
+    pygame.draw.rect(screen,(255,255,255),[0,0,95,30])
     score += 1
-    scoring(score)
+    scoring(score) #timescore
+    scoring2(coins) #coinscore 
     pressed_keys = pygame.key.get_pressed()
     player.update(pressed_keys)
     enemies.update()
     clouds.update()
+    pygame.display.update()
     screen.fill((0,0,0)) #(0,0,0) - Color
     screen.blit(player.surf, player.rect)
     background2 = pygame.image.load("background.png").convert()
@@ -169,11 +175,12 @@ while running:
         player.kill()
         bgmusic.stop()
         fart.play()
+        print("Your score is: "+str(score)+"\nAnd your coin score is: " + str(coins))
         time.sleep(2)
         running = False
     clock = pygame.time.Clock()
     clock.tick(45)
     pygame.display.flip()
-
 # Done! Time to quit.
+
 pygame.quit()
