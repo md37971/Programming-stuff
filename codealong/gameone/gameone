@@ -44,26 +44,25 @@ class Player(pygame.sprite.Sprite):
 
 class Enemy(pygame.sprite.Sprite):
     def __init__(self):
-        a = 0
         super(Enemy, self).__init__()
         self.surf = pygame.Surface((25, 10))
         self.surf.fill((150,150,150))
         cannon = pygame.image.load("cannon.png").convert()
-        self.surf = pygame.transform.scale(cannon,((cannon.get_width()//40),(cannon.get_height()//40)))
-        self.surf.set_colorkey((a,a,a), RLEACCEL)
+        self.surf = pygame.transform.scale(cannon,((cannon.get_width()//25),(cannon.get_height()//25)))
+        self.surf.set_colorkey((0,0,0), RLEACCEL)
         self.rect = self.surf.get_rect(
             center=(
                 random.randint(s_width + 20, s_width + 100),
                 random.randint(0, s_height),
             )
         )
+        self.speed = random.randint(5, 20)
 
     def update(self):
         self.rect.move_ip(-5,0)
         if self.rect.right < 0:
             self.kill()    
-        self.speed = random.randint(5, 20)
-
+    
 class Cloud(pygame.sprite.Sprite):
     def __init__(self):
         super(Cloud, self).__init__()
@@ -76,7 +75,7 @@ class Cloud(pygame.sprite.Sprite):
             self.surf.set_colorkey((0,0,0), RLEACCEL)
             self.rect = self.surf.get_rect(
                 center = (
-                    random.randint(s_width + 5, s_width + 50),
+                    random.randint(s_width + 20, s_width + 100),
                     random.randint(0, s_height),
                 )
             )
@@ -120,7 +119,6 @@ bgmusic.set_volume(0.2)
 bgmusic.play()
 
 pygame.init()
-#pygame.font.init()
 #define screen width and height
 s_width = 800
 s_height = 600
@@ -162,8 +160,8 @@ while running:
     scoring2(coins) #coinscore 
     pressed_keys = pygame.key.get_pressed()
     player.update(pressed_keys)
-    enemies.update()
     clouds.update()
+    enemies.update()
     pygame.display.update()
     screen.fill((0,0,0)) #(0,0,0) - Color
     screen.blit(player.surf, player.rect)
