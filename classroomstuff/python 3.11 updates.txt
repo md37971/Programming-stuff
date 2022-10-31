@@ -1,0 +1,4 @@
+Python 3.11 Updates
+1. TaskGroup class has been added, which is an alternate of create_task() and gather() functions.
+2. CPython 3.11 is on average 25% faster than Cpython 3.10, which is a big performance upgrade to the previous version.
+3. __complex__() and __bytes__() for complex and bytes have been implemented to support typing protcols such as typing.SupportsComplex and typing.SupportsBytes.
