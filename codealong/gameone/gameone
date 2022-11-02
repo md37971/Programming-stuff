@@ -190,6 +190,7 @@ while running:
     player.update(pressed_keys)
     clouds.update()
     enemies.update()
+    coinsevent.update()
     pygame.display.update()
     screen.fill((0,0,0)) #(0,0,0) - Color
     screen.blit(player.surf, player.rect)
