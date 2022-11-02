@@ -99,11 +99,9 @@ class Cloud(pygame.sprite.Sprite):
 
 class Coinspawn(pygame.sprite.Sprite):
     def __init__(self):
-        a = 200
-        print(random.randint(1,5))
         super(Coinspawn, self).__init__()
         coinimage = pygame.image.load("coin.png").convert()
-        self.surf = pygame.transform.scale(coinimage,((coinimage.get_width() // a),(coinimage.get_height() // a)))
+        self.surf = pygame.transform.scale(coinimage,((coinimage.get_width() // 15),(coinimage.get_height() // 15)))
         self.surf.set_colorkey((255,255,255), RLEACCEL)
         self.rect = self.surf.get_rect(
             center = (
@@ -111,7 +109,6 @@ class Coinspawn(pygame.sprite.Sprite):
                 random.randint(0, s_height),
             )
         )
-        self.speed = random.randint(5, 20)
     def update(self):
         self.rect.move_ip(-5,0)
         if self.rect.right < 0:
@@ -136,6 +133,8 @@ def scoring2(coins): #coinscore
 pygame.mixer.init()
 fart = pygame.mixer.Sound("oof.oga")
 bgmusic = pygame.mixer.Sound("funk.wav")
+mariocoin = pygame.mixer.Sound("coinsound.wav")
+mariocoin.set_volume(0.2)
 bgmusic.set_volume(0.2)
 bgmusic.play()
 
@@ -205,6 +204,9 @@ while running:
         print("Your score is: "+str(score)+"\nAnd your coin score is: " + str(coins))
         time.sleep(2)
         running = False
+    if pygame.sprite.spritecollideany(player,coinsevent):
+        coins += 1
+        mariocoin.play()
     clock = pygame.time.Clock()
     clock.tick(45)
     pygame.display.flip()
