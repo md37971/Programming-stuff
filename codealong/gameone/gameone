@@ -204,7 +204,7 @@ while running:
         print("Your score is: "+str(score)+"\nAnd your coin score is: " + str(coins))
         time.sleep(2)
         running = False
-    if pygame.sprite.spritecollideany(player,coinsevent):
+    if pygame.sprite.spritecollideany(player, coinsevent):
         coins += 1
         mariocoin.play()
     clock = pygame.time.Clock()
