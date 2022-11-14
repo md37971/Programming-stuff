@@ -17,23 +17,17 @@ def update():
     b = random.randint(0,255)
     global speed
     cube.color = color.rgb(r,g,b)
-    cube.rotation_x = cube.rotation_x + time.dt*100
-    cube.rotation_y = cube.rotation_y + time.dt*100
-    cube.x = cube.position.x + time.dt * random.randint(1,5)
-    print(cube.x)
+    cube.x = cube.x + time.dt * speed
+    cube.rotation_y = cube.rotation_y + time.dt * 100
     #cube.y = cube.position.y + time.dt * -abs(random.randint(1,5))
-    if abs(cube.x) > 3:
+    if abs(cube.x) > 5:
         speed = speed * -1
-        #cube.x =-6
-
+    if abs(cube.x) < -5:
+        speed = speed * 1
+    
 
 #Application
 app = Ursina()
 speed = 3
-cube = Entity(model="cube", position = (3,2,6))
-text = Text(text = "Cat",scale = 5)
+cube = Entity(model="cube", position = (0,0,0))
 app.run()
-
-
-  
-
