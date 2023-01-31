@@ -68,34 +68,26 @@ class Cloud(pygame.sprite.Sprite):
         super(Cloud, self).__init__()
         # rng image values
         rng = random.randint(1,10)
+        backgroundentities = ["balloon.png","cloud.png"]
         if rng == 2 or rng == 5:
-            a = random.randint(3,5)
-            cloudimage = pygame.image.load("balloon.png").convert()
-            self.surf = pygame.transform.scale(cloudimage,((cloudimage.get_width() // a),(cloudimage.get_height() // a))) #8
-            self.surf.set_colorkey((0,0,0), RLEACCEL)
-            self.rect = self.surf.get_rect(
-                center = (
-                    random.randint(s_width + 20, s_width + 100),
-                    random.randint(0, s_height),
-                )
-            )
+            selectedentity = backgroundentities[0]
         else:
-            a = random.randint(3,6)
-            cloudimage = pygame.image.load("cloud.png").convert()
-            self.surf = pygame.transform.scale(cloudimage,((cloudimage.get_width() // a),(cloudimage.get_height() // a))) #3
-            self.surf.set_colorkey((0,0,0), RLEACCEL)
-            self.rect = self.surf.get_rect(
-                center = (
-                    random.randint(s_width + 20, s_width + 100),
-                    random.randint(0, s_height),
-                )
+            selectedentity = backgroundentities[1]
+        a = random.randint(3,6)
+        cloudimage = pygame.image.load(selectedentity).convert()
+        self.surf = pygame.transform.scale(cloudimage,((cloudimage.get_width() // a),(cloudimage.get_height() // a))) #8
+        self.surf.set_colorkey((0,0,0), RLEACCEL)
+        self.rect = self.surf.get_rect(
+            center = (
+                random.randint(s_width + 20, s_width + 100),
+                random.randint(0, s_height),
             )
+        )
         self.speed = random.randint(3,5)
     def update(self):
         self.rect.move_ip(-self.speed,0)
         if self.rect.right < 0:
             self.kill()
-
 
 class Coinspawn(pygame.sprite.Sprite):
     def __init__(self):
@@ -151,7 +143,6 @@ ADDCOIN = pygame.USEREVENT + 3
 pygame.time.set_timer(ADDCOIN,1000)
 
 # Set up the drawing window
-screen = pygame.display.set_mode([500, 500])
 player = Player()
 enemies = pygame.sprite.Group()
 clouds = pygame.sprite.Group()
@@ -193,21 +184,22 @@ while running:
     pygame.display.update()
     screen.fill((0,0,0)) #(0,0,0) - Color
     screen.blit(player.surf, player.rect)
-    background2 = pygame.image.load("background.png").convert()
-    screen.blit(background2,(0,0))
+    backgroundimage = pygame.image.load("background.png").convert()
+    backgroundimage = pygame.transform.scale(backgroundimage,(s_width,s_height))
+    screen.blit(backgroundimage,(0,0))
     for entity in all_sprites:
         screen.blit(entity.surf, entity.rect)
     if pygame.sprite.spritecollideany(player, enemies):
         player.kill()
         bgmusic.stop()
         fart.play()
-        print("Your score is: "+str(score)+"\nAnd your coin score is: " + str(coins))
+        print("Score: "+str(score)+"\nCoin Score: " + str(coins))
         time.sleep(2)
         running = False
     if pygame.sprite.spritecollideany(player, coinsevent):
         coins += 1
         mariocoin.play()
     clock = pygame.time.Clock()
-    clock.tick(45)
+    clock.tick(60)
 # Done! Time to quit.
 pygame.quit()
